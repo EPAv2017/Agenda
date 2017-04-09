@@ -123,6 +123,16 @@ public class Agenda {
 		MenuItem mntmAbout = new MenuItem(menu, SWT.NONE);
 		mntmAbout.setText("About");
 
+		//on EXIT
+		mntmExit.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int confirmed = JOptionPane.showConfirmDialog(null, "Doriti sa parasiti aplicatia?", "EXIT", JOptionPane.YES_NO_OPTION);
+				if (confirmed == JOptionPane.YES_OPTION) {
+					System.exit(0);
+				}
+			}
+		});
 
 	}
 
