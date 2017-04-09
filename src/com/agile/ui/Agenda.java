@@ -10,16 +10,24 @@ import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.TableCursor;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 public class Agenda {
 
 	protected Shell shell;
+	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
+	private Table table;
+
 	/**
 	 * Launch the application.
 	 * 
@@ -122,6 +130,39 @@ public class Agenda {
 
 		MenuItem mntmAbout = new MenuItem(menu, SWT.NONE);
 		mntmAbout.setText("About");
+		
+		ScrolledForm scrldfrmListingabonati = formToolkit.createScrolledForm(shell);
+		scrldfrmListingabonati.setBounds(36, 37, 456, 297);
+		formToolkit.paintBordersFor(scrldfrmListingabonati);
+		scrldfrmListingabonati.setText("Abonati");
+		
+		table = new Table(scrldfrmListingabonati.getBody(), SWT.BORDER | SWT.FULL_SELECTION);
+		table.setBounds(20, 10, 404, 244);
+		formToolkit.adapt(table);
+		formToolkit.paintBordersFor(table);
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
+		
+		TableColumn tblclmnNume = new TableColumn(table, SWT.NONE);
+		tblclmnNume.setWidth(100);
+		tblclmnNume.setText("Nume");
+		
+		TableColumn tblclmnPrenume = new TableColumn(table, SWT.NONE);
+		tblclmnPrenume.setWidth(100);
+		tblclmnPrenume.setText("Prenume");
+		
+		TableColumn tblclmnCnp = new TableColumn(table, SWT.NONE);
+		tblclmnCnp.setWidth(100);
+		tblclmnCnp.setText("CNP");
+		
+		TableColumn tblclmnNrtelefon = new TableColumn(table, SWT.NONE);
+		tblclmnNrtelefon.setWidth(100);
+		tblclmnNrtelefon.setText("Nr.Telefon");
+		
+		TableCursor tableCursor = new TableCursor(table, SWT.NONE);
+		formToolkit.adapt(tableCursor);
+		formToolkit.paintBordersFor(tableCursor);
+
 
 		//on EXIT
 		mntmExit.addSelectionListener(new SelectionAdapter() {
