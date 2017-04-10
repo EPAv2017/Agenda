@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridLayout;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ButtonGroup;
@@ -21,7 +22,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableCursor;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -33,6 +36,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 import com.agile.model.Abonat;
 import com.agile.model.CarteDeTelefon;
+import com.agile.model.Cautare;
 import com.agile.model.NrFix;
 import com.agile.model.NrMobil;
 import com.agile.model.Verificare;
@@ -170,7 +174,7 @@ public class Agenda {
 		TableColumn tblclmnCnp = new TableColumn(table, SWT.NONE);
 		tblclmnCnp.setWidth(100);
 		tblclmnCnp.setText("CNP");
-		
+
 		TableColumn tblclmnNrtelefon = new TableColumn(table, SWT.NONE);
 		tblclmnNrtelefon.setWidth(100);
 		tblclmnNrtelefon.setText("Nr.Telefon");
@@ -178,6 +182,18 @@ public class Agenda {
 		TableCursor tableCursor = new TableCursor(table, SWT.NONE);
 		formToolkit.adapt(tableCursor);
 		formToolkit.paintBordersFor(tableCursor);
+
+		final Label lblCautare = new Label(shell, SWT.NONE);
+		lblCautare.setBounds(36, 0, 360, 41);
+		formToolkit.adapt(lblCautare, true, true);
+		lblCautare.setText("");
+		lblCautare.setVisible(false);
+
+		final Button btnStergereFiltre = new Button(shell, SWT.NONE);
+		btnStergereFiltre.setBounds(402, 0, 90, 31);
+		formToolkit.adapt(btnStergereFiltre, true, true);
+		btnStergereFiltre.setText("Stergere filtre");
+		btnStergereFiltre.setVisible(false);
 
 		//on INREGISTRARE
 		mntmInregistrare.addSelectionListener(new SelectionAdapter() {
@@ -207,30 +223,61 @@ public class Agenda {
 			}
 		});
 
-		//on INREGISTRARE
-		mntmInregistrare.addSelectionListener(new SelectionAdapter() {
+		//on CAUTA
+		mntmCauta.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				JPanel inregistrare = new JPanel();
+				JPanel cautareAbonati = new JPanel();
 				JPanel labels = new JPanel(new GridLayout(0,1,2,2));
-				labels.add(new JLabel("Cod inregistrare", SwingConstants.RIGHT));
-				inregistrare.add(labels, BorderLayout.WEST);
-				JPanel controls = new JPanel(new GridLayout(0,1,2,2));
-			    JPasswordField codInregistrare = new JPasswordField(15);
-			    controls.add(codInregistrare);
-			    inregistrare.add(controls, BorderLayout.CENTER);
-			    int result = JOptionPane.showConfirmDialog(null, inregistrare, "Inregistrare", JOptionPane.OK_CANCEL_OPTION);
-			    if (result == JOptionPane.OK_OPTION) {
-			    	char [] parola = codInregistrare.getPassword();
-			    	if(parola[0] == 'c' && parola[1] == 'o' && parola[2] == 'd' && parola[3] == '@') {
-//					if(codInregistrare.getPassword().equals("codInregistrare")) {
-						mntmOpen.setEnabled(true);
-						mntmSave.setEnabled(true);
-						mntmAbonati.setEnabled(true);
-						mntmHelp.setEnabled(false);
-					} else {
-						JOptionPane.showMessageDialog(inregistrare, "Cod de inregistrare invalid!", "Error", JOptionPane.ERROR_MESSAGE);
+				labels.add(new JLabel("Nume", SwingConstants.RIGHT));
+		        labels.add(new JLabel("Prenume", SwingConstants.RIGHT));
+		        labels.add(new JLabel("CNP", SwingConstants.RIGHT));
+		        labels.add(new JLabel("Nr. Telefon", SwingConstants.RIGHT));
+		        cautareAbonati.add(labels, BorderLayout.WEST);
+		        JPanel controls = new JPanel(new GridLayout(0,1,2,2));
+		        JTextField firstName = new JTextField(15);
+				JTextField lastName = new JTextField(15);
+				JTextField cnp = new JTextField(15);
+				JTextField phone = new JTextField(15);
+				controls.add(firstName);
+				controls.add(lastName);
+				controls.add(cnp);
+				controls.add(phone);
+				cautareAbonati.add(controls, BorderLayout.CENTER);
+				int result = JOptionPane.showConfirmDialog(null, cautareAbonati, "Cautare abonat", JOptionPane.OK_CANCEL_OPTION);
+				if (result == JOptionPane.OK_OPTION) {
+					List<Abonat> lista = carteDeTelefon.getListaAbonati();
+					List<Integer> indexesToRemove = new ArrayList<Integer>();
+					String filtrare = "Rezultate filtrate dupa: ";
+					if(!firstName.getText().equals("")) {
+						filtrare +=  "nume = " + firstName.getText() + ", \n";
 					}
+					if(!lastName.getText().equals("")) {
+						filtrare += " prenume = " + lastName.getText()  + ", ";
+					}
+					if(!cnp.getText().equals("")) {
+						filtrare += " CNP = " + cnp.getText()  + ", ";
+					}
+					if(!phone.getText().equals("")) {
+						filtrare += " nr. telefon = " + phone.getText()  + ", ";
+					}
+					indexesToRemove=Cautare.cautareCompleta(lista, firstName.getText(), lastName.getText(), cnp.getText(), phone.getText());
+					table.removeAll();
+					for(int i = 0 ; i < lista.size(); i++ ) {
+						if(!indexesToRemove.contains(i)) {
+							TableItem linie = new TableItem(table, SWT.NONE);
+							linie.setText(new String [] {lista.get(i).getNume(), lista.get(i).getPrenume(), lista.get(i).getCNP(), lista.get(i).getNrTelefon().getNumar() });
+						}
+					}
+					if(indexesToRemove.size() > 0) {
+						lblCautare.setText(filtrare.substring(0, filtrare.length()-2));
+						lblCautare.setVisible(true);
+						btnStergereFiltre.setVisible(true);
+					} else {
+						lblCautare.setVisible(false);
+						btnStergereFiltre.setVisible(false);
+					}
+
 				}
 			}
 		});
