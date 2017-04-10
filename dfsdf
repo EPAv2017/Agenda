@@ -1,0 +1,50 @@
+[33mcommit cf2c6b41f6767c712f377110f592f8fd59ab27fc[m
+Author: rodica-brudea <rodiqha@yahoo.com>
+Date:   Mon Apr 10 11:30:26 2017 +0300
+
+    on shell closed
+
+[33mcommit f9a8a377dfcddb36a4ae7d35036f287193535d25[m
+Author: rodica-brudea <rodiqha@yahoo.com>
+Date:   Mon Apr 10 11:28:39 2017 +0300
+
+    datele agendei
+
+[33mcommit e933d183fde8578a924ecf8b11ed77354f7a9295[m
+Author: rodica-brudea <rodiqha@yahoo.com>
+Date:   Mon Apr 10 11:24:03 2017 +0300
+
+    Delete CarteDeTelefon.java
+
+[33mcommit 3c4861f6b35b369596ac2fc853a57968e7c394a2[m
+Author: rodica-brudea <rodiqha@yahoo.com>
+Date:   Mon Apr 10 11:21:55 2017 +0300
+
+    Delete CarteDeTelefon.java
+
+[33mcommit d63f5f735fec3a8341b28121d77e0589be397e0a[m
+Author: rodica-brudea <rodiqha@yahoo.com>
+Date:   Mon Apr 10 11:20:30 2017 +0300
+
+    date agenda
+
+[33mcommit 1d0a98193d9353839137206cbd60957896d262f3[m
+Author: rodica-brudea <rodiqha@yahoo.com>
+Date:   Mon Apr 10 11:17:14 2017 +0300
+
+    carte de telefon
+
+[33mcommit d0c73306393593aded9dd4ab3302fd7c610a6ed3[m
+Merge: abf16b9 087c543
+Author: rodica-brudea <rodiqha@yahoo.com>
+Date:   Mon Apr 10 11:00:46 2017 +0300
+
+    Merge pull request #1 from EPAv2017/rodica-brudea-patch-1
+    
+    agenda on shell closed
+
+[33mcommit abf16b9e10efff6678a6c6e20b81f0aa76d8f91f[m
+Author: Mihai Alexandru <mihaialexandru9@yahoo.ro>
+Date:   Mon Apr 10 09:21:40 2017 +0300
+
+    Inregistrare ca administrator
