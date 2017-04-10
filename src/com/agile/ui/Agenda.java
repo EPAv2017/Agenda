@@ -4,12 +4,16 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridLayout;
 import java.net.URL;
+import java.util.List;
 
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 
@@ -23,13 +27,21 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+
+import com.agile.model.Abonat;
+import com.agile.model.CarteDeTelefon;
+import com.agile.model.NrFix;
+import com.agile.model.NrMobil;
+import com.agile.model.Verificare;
 
 public class Agenda {
 
 	protected Shell shell;
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
+	private CarteDeTelefon carteDeTelefon = new CarteDeTelefon();
 	private Table table;
 
 	/**
@@ -219,6 +231,73 @@ public class Agenda {
 					} else {
 						JOptionPane.showMessageDialog(inregistrare, "Cod de inregistrare invalid!", "Error", JOptionPane.ERROR_MESSAGE);
 					}
+				}
+			}
+		});
+
+		//on ADAUGA
+		mntmAdauga.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				JPanel adaugareAbonat = new JPanel();
+				JPanel labels = new JPanel(new GridLayout(0,1,2,2));
+				labels.add(new JLabel("Nume", SwingConstants.RIGHT));
+		        labels.add(new JLabel("Prenume", SwingConstants.RIGHT));
+		        labels.add(new JLabel("CNP", SwingConstants.RIGHT));
+		        labels.add(new JLabel("Telefon fix", SwingConstants.RIGHT));
+		        labels.add(new JLabel("Telefon mobil", SwingConstants.RIGHT));
+		        labels.add(new JLabel("Nr. Telefon", SwingConstants.RIGHT));
+		        adaugareAbonat.add(labels, BorderLayout.WEST);
+		        JPanel controls = new JPanel(new GridLayout(0,1,2,2));
+		        JTextField firstName = new JTextField(15);
+				JTextField lastName = new JTextField(15);
+				JTextField cnp = new JTextField(15);
+				JRadioButton telefonFix = new JRadioButton();
+				JRadioButton telefonMobil = new JRadioButton();
+				ButtonGroup bG = new ButtonGroup();
+			    bG.add(telefonFix);
+			    bG.add(telefonMobil);
+			    telefonMobil.setSelected(true);
+				JTextField phone = new JTextField(15);
+				controls.add(firstName);
+				controls.add(lastName);
+				controls.add(cnp);
+				controls.add(telefonFix);
+				controls.add(telefonMobil);
+				controls.add(phone);
+				adaugareAbonat.add(controls, BorderLayout.CENTER);
+				int result = JOptionPane.showConfirmDialog(null, adaugareAbonat, "Adaugare abonat", JOptionPane.OK_CANCEL_OPTION);
+				if (result == JOptionPane.OK_OPTION) {
+					Abonat abonat;
+					List<Abonat> lista = carteDeTelefon.getListaAbonati();
+					switch(Verificare.codEroare(firstName.getText(), lastName.getText(), cnp.getText(), phone.getText(), telefonMobil.isSelected(), lista)) {
+						case 1:
+							JOptionPane.showMessageDialog(adaugareAbonat, "Numele de abonat este obligatoriu!", "Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						case 2:
+							JOptionPane.showMessageDialog(adaugareAbonat, "Prenumele de abonat este obligatoriu!", "Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						case 3:
+							JOptionPane.showMessageDialog(adaugareAbonat, "CNP invalid!", "Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						case 4:
+							JOptionPane.showMessageDialog(adaugareAbonat, "Numar de telefon invalid!", "Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						case 5:
+							JOptionPane.showMessageDialog(adaugareAbonat, "Numar de telefon invalid!", "Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						case 6:
+							JOptionPane.showMessageDialog(adaugareAbonat, "CNP-ul introdus este deja folosit!", "Error", JOptionPane.ERROR_MESSAGE);
+							return;
+					}
+					if(telefonFix.isSelected()) {
+						abonat = new Abonat(firstName.getText(), lastName.getText(), cnp.getText(), new NrFix(phone.getText()));
+					} else {
+						abonat = new Abonat(firstName.getText(), lastName.getText(), cnp.getText(), new NrMobil(phone.getText()));
+					}
+					carteDeTelefon.adaugaAbonat(abonat);
+					TableItem itemNume = new TableItem(table, SWT.NONE);
+					itemNume.setText(new String [] {abonat.getNume(), abonat.getPrenume(), abonat.getCNP(), abonat.getNrTelefon().getNumar() });
 				}
 			}
 		});
