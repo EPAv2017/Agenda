@@ -20,7 +20,7 @@ public class CarteDeTelefon implements Serializable {
 	public void adaugaAbonat(Abonat abonat) {
 		this.listaAbonati.add(abonat);
 	}
-	
+
 	public void stergeAbonat(int index) {
 		this.listaAbonati.remove(index);
 	}
