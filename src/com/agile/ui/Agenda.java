@@ -154,7 +154,7 @@ public class Agenda {
 		TableColumn tblclmnPrenume = new TableColumn(table, SWT.NONE);
 		tblclmnPrenume.setWidth(100);
 		tblclmnPrenume.setText("Prenume");
-		
+
 		TableColumn tblclmnCnp = new TableColumn(table, SWT.NONE);
 		tblclmnCnp.setWidth(100);
 		tblclmnCnp.setText("CNP");
