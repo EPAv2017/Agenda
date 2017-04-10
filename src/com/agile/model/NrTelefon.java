@@ -24,7 +24,5 @@ public abstract class NrTelefon implements Serializable {
 		super();
 		this.numar = numar;
 	}
-	
-	
-	
+
 }

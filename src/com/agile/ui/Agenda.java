@@ -1,11 +1,15 @@
 package com.agile.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.GridLayout;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 
@@ -163,6 +167,33 @@ public class Agenda {
 		formToolkit.adapt(tableCursor);
 		formToolkit.paintBordersFor(tableCursor);
 
+		//on INREGISTRARE
+		mntmInregistrare.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				JPanel inregistrare = new JPanel();
+				JPanel labels = new JPanel(new GridLayout(0,1,2,2));
+				labels.add(new JLabel("Cod inregistrare", SwingConstants.RIGHT));
+				inregistrare.add(labels, BorderLayout.WEST);
+				JPanel controls = new JPanel(new GridLayout(0,1,2,2));
+			    JPasswordField codInregistrare = new JPasswordField(15);
+			    controls.add(codInregistrare);
+			    inregistrare.add(controls, BorderLayout.CENTER);
+			    int result = JOptionPane.showConfirmDialog(null, inregistrare, "Inregistrare", JOptionPane.OK_CANCEL_OPTION);
+			    if (result == JOptionPane.OK_OPTION) {
+			    	char [] parola = codInregistrare.getPassword();
+			    	if(parola[0] == 'c' && parola[1] == 'o' && parola[2] == 'd' && parola[3] == '@') {
+//					if(codInregistrare.getPassword().equals("codInregistrare")) {
+						mntmOpen.setEnabled(true);
+						mntmSave.setEnabled(true);
+						mntmAbonati.setEnabled(true);
+						mntmHelp.setEnabled(false);
+					} else {
+						JOptionPane.showMessageDialog(inregistrare, "Cod de inregistrare invalid!", "Error", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+			}
+		});
 
 		//on EXIT
 		mntmExit.addSelectionListener(new SelectionAdapter() {
