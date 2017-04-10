@@ -3,12 +3,16 @@ package com.agile.ui;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridLayout;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -194,6 +198,39 @@ public class Agenda {
 		formToolkit.adapt(btnStergereFiltre, true, true);
 		btnStergereFiltre.setText("Stergere filtre");
 		btnStergereFiltre.setVisible(false);
+
+		//on SAVE
+		mntmSave.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				JFileChooser fisier = new JFileChooser();
+				int returnVal = fisier.showSaveDialog(fisier);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					String fileName = fisier.getSelectedFile().getName();
+					String fileDir = fisier.getCurrentDirectory().toString();
+					ObjectOutputStream oos = null;
+					FileOutputStream fout = null;
+					try {
+						fout = new FileOutputStream(fileDir + "\\" + fileName + ".ser");
+						oos = new ObjectOutputStream(fout);
+						oos.writeObject(carteDeTelefon);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					} finally {
+						try {
+							if(oos != null) {
+								oos.close();
+							}
+							if(fout != null) {
+								fout.close();
+							}
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+					}
+				}
+			}
+		});
 
 		//on INREGISTRARE
 		mntmInregistrare.addSelectionListener(new SelectionAdapter() {
