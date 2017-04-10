@@ -1,0 +1,9 @@
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
+
+shell.addShellListener(new ShellAdapter() {
+                    @Override
+                    public void shellClosed(ShellEvent se) {
+                        System.exit(0);
+                    }
+                });
