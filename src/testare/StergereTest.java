@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Assume;
 
 /**
  *
@@ -59,6 +60,7 @@ public class StergereTest {
         try
         {
             citesteCarteDeTelefon();
+	    Assume.assumeTrue("Agenda vida", !ct.getListaAbonati().isEmpty());
         }
         catch(IOException | ClassNotFoundException e) {e.printStackTrace();}
     }
