@@ -3,11 +3,8 @@ package com.agile.ui;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridLayout;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,8 +24,6 @@ import javax.swing.SwingConstants;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableCursor;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
@@ -48,7 +43,6 @@ import com.agile.model.CarteDeTelefon;
 import com.agile.model.Cautare;
 import com.agile.model.NrFix;
 import com.agile.model.NrMobil;
-import com.agile.model.Sortare;
 import com.agile.model.Verificare;
 
 public class Agenda {
@@ -246,7 +240,7 @@ public class Agenda {
 				}
 			}
 		});
-
+		
 		//on SAVE
 		mntmSave.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -366,21 +360,6 @@ public class Agenda {
 				}
 			}
 		});
-		
-		//reset filters
-		btnStergereFiltre.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent e) {
-				table.removeAll();
-				List<Abonat> lista = carteDeTelefon.getListaAbonati();
-				for(int i = 0 ; i < lista.size(); i++ ) {
-					TableItem linie = new TableItem(table, SWT.NONE);
-					linie.setText(new String [] {lista.get(i).getNume(), lista.get(i).getPrenume(), lista.get(i).getCNP(), lista.get(i).getNrTelefon().getNumar() });
-				}
-				lblCautare.setVisible(false);
-				btnStergereFiltre.setVisible(false);
-			}
-		});
 
 		//on STERGE
 		mntmSterge.addSelectionListener(new SelectionAdapter() {
@@ -485,6 +464,7 @@ public class Agenda {
 			}
 		});
 
+
 		//on ADAUGA
 		mntmAdauga.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -552,67 +532,6 @@ public class Agenda {
 			}
 		});
 
-		//sorting by FIRSTNAME
-		tblclmnNume.addSelectionListener(new SelectionAdapter() {
-			boolean firstClick = true;
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				List<Abonat> lista = Sortare.SortareDupaNume(carteDeTelefon.getListaAbonati(), firstClick);
-				firstClick = !firstClick;
-				table.removeAll();
-				for(int i = 0 ; i < lista.size(); i++ ) {
-					TableItem linie = new TableItem(table, SWT.NONE);
-					linie.setText(new String [] {lista.get(i).getNume(), lista.get(i).getPrenume(), lista.get(i).getCNP(), lista.get(i).getNrTelefon().getNumar() });
-				}
-			}
-		});
-
-		//sorting by LASTNAME
-		tblclmnPrenume.addSelectionListener(new SelectionAdapter() {
-			boolean firstClick = true;
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				List<Abonat> lista = Sortare.SortareDupaPrenume(carteDeTelefon.getListaAbonati(), firstClick);
-				firstClick = !firstClick;
-				table.removeAll();
-				for(int i = 0 ; i < lista.size(); i++ ) {
-					TableItem linie = new TableItem(table, SWT.NONE);
-					linie.setText(new String [] {lista.get(i).getNume(), lista.get(i).getPrenume(), lista.get(i).getCNP(), lista.get(i).getNrTelefon().getNumar() });
-				}
-			}
-		});
-
-		//sorting by CNP
-		tblclmnCnp.addSelectionListener(new SelectionAdapter() {
-			boolean firstClick = true;
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				List<Abonat> lista = Sortare.SortareDupaCNP(carteDeTelefon.getListaAbonati(), firstClick);
-				firstClick = !firstClick;
-				table.removeAll();
-				for(int i = 0 ; i < lista.size(); i++ ) {
-					TableItem linie = new TableItem(table, SWT.NONE);
-					linie.setText(new String [] {lista.get(i).getNume(), lista.get(i).getPrenume(), lista.get(i).getCNP(), lista.get(i).getNrTelefon().getNumar() });
-				}
-			}
-		});
-
-		//sorting by PHONE
-		tblclmnNrtelefon.addSelectionListener(new SelectionAdapter() {
-			boolean firstClick = true;
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				List<Abonat> lista = Sortare.SortareDupaNrTelefon(carteDeTelefon.getListaAbonati(), firstClick);
-				firstClick = !firstClick;
-				table.removeAll();
-				for(int i = 0 ; i < lista.size(); i++ ) {
-					TableItem linie = new TableItem(table, SWT.NONE);
-					linie.setText(new String [] {lista.get(i).getNume(), lista.get(i).getPrenume(), lista.get(i).getCNP(), lista.get(i).getNrTelefon().getNumar() });
-				}
-			}
-		});
-
-
 		//on EXIT
 		mntmExit.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -624,6 +543,111 @@ public class Agenda {
 			}
 		});
 		
+		tableCursor.addMouseListener(new MouseAdapter() {
+			@Override //double-click on a line
+			public void mouseDoubleClick(MouseEvent e) {
+				JPanel modificareAbonat = new JPanel();
+				JPanel labels = new JPanel(new GridLayout(0,1,2,2));
+				labels.add(new JLabel("Nume", SwingConstants.RIGHT));
+		        labels.add(new JLabel("Prenume", SwingConstants.RIGHT));
+		        labels.add(new JLabel("CNP", SwingConstants.RIGHT));
+		        labels.add(new JLabel("Telefon fix", SwingConstants.RIGHT));
+		        labels.add(new JLabel("Telefon mobil", SwingConstants.RIGHT));
+		        labels.add(new JLabel("Nr. Telefon", SwingConstants.RIGHT));
+		        modificareAbonat.add(labels, BorderLayout.WEST);
+		        JPanel controls = new JPanel(new GridLayout(0,1,2,2));
+		        JTextField firstName = new JTextField(15);
+				JTextField lastName = new JTextField(15);
+				JTextField cnp = new JTextField(15);
+				JRadioButton telefonFix = new JRadioButton();
+				JRadioButton telefonMobil = new JRadioButton();
+				ButtonGroup bG = new ButtonGroup();
+			    bG.add(telefonFix);
+			    bG.add(telefonMobil);
+			    telefonMobil.setSelected(true);
+				JTextField phone = new JTextField(15);
+				int index = table.getSelectionIndex();
+				firstName.setText(carteDeTelefon.getListaAbonati().get(index).getNume());
+				lastName.setText(carteDeTelefon.getListaAbonati().get(index).getPrenume());
+				cnp.setText(carteDeTelefon.getListaAbonati().get(index).getCNP());
+				phone.setText(carteDeTelefon.getListaAbonati().get(index).getNrTelefon().getNumar());
+				controls.add(firstName);
+				controls.add(lastName);
+				controls.add(cnp);
+				controls.add(telefonFix);
+				controls.add(telefonMobil);
+				controls.add(phone);
+				modificareAbonat.add(controls, BorderLayout.CENTER);
+				int result = JOptionPane.showConfirmDialog(null, modificareAbonat, "Modificare abonat", JOptionPane.OK_CANCEL_OPTION);
+				if (result == JOptionPane.OK_OPTION) {
+					if(firstName.getText().equals("")) {
+						JOptionPane.showMessageDialog(modificareAbonat, "Numele de abonat este obligatoriu!", "Error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					if(lastName.getText().equals("")) {
+						JOptionPane.showMessageDialog(modificareAbonat, "Prenumele de abonat este obligatoriu!", "Error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					if(cnp.getText().length() != 13 || Pattern.matches("[a-zA-Z]+", cnp.getText())) {
+						JOptionPane.showMessageDialog(modificareAbonat, "CNP invalid!", "Error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					if(Pattern.matches("[a-zA-Z]+", phone.getText())) {
+						JOptionPane.showMessageDialog(modificareAbonat, "Numar de telefon invalid!", "Error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					if(telefonMobil.isSelected()) {
+						if(phone.getText().length() != 10) {
+							JOptionPane.showMessageDialog(modificareAbonat, "Numar de telefon invalid!", "Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+					}
+					List<Abonat> lista = carteDeTelefon.getListaAbonati();
+					for(int i = 0 ; i < lista.size(); i++ ){ 
+						if(lista.get(i).getCNP().equals(cnp.getText())) {
+							JOptionPane.showMessageDialog(modificareAbonat, "CNP-ul introdus este deja folosit!", "Error", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+					}
+					carteDeTelefon.getListaAbonati().get(index).setNume(firstName.getText());
+					carteDeTelefon.getListaAbonati().get(index).setPrenume(lastName.getText());
+					carteDeTelefon.getListaAbonati().get(index).setCNP(cnp.getText());
+					if(telefonFix.isSelected()) {
+						carteDeTelefon.getListaAbonati().get(index).setNrTelefon(new NrFix(phone.getText()));
+					} else {
+						carteDeTelefon.getListaAbonati().get(index).setNrTelefon(new NrMobil(phone.getText()));
+					}
+					table.removeAll();
+					List<Abonat> listaNoua = carteDeTelefon.getListaAbonati();
+					for(int i = 0 ; i < listaNoua.size(); i++ ) {
+						TableItem linie = new TableItem(table, SWT.NONE);
+						linie.setText(new String [] {listaNoua.get(i).getNume(), listaNoua.get(i).getPrenume(), listaNoua.get(i).getCNP(), listaNoua.get(i).getNrTelefon().getNumar() });
+					}
+				}
+			}
+		});
+		
+		tableCursor.addKeyListener(new KeyAdapter() {
+			@Override //on DEL press
+			public void keyReleased(KeyEvent e) {
+				if(e.keyCode == 127) {
+					int index = table.getSelectionIndex();
+					int confirmed = JOptionPane.showConfirmDialog(null, "Doriti sa stergeti abonatul " + carteDeTelefon.getListaAbonati().get(index).getNume() + "?", "Stergere", JOptionPane.YES_NO_OPTION);
+					if (confirmed == JOptionPane.YES_OPTION) {
+						carteDeTelefon.stergeAbonat(index);
+						table.remove(index);
+					}
+				}
+			}
+		});
+		
+		//on ABOUT
+		mntmAbout.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				JOptionPane.showMessageDialog(null, "Autor: Noi toti! :) \n Aplicatia permite administrarea unei liste de abonati.", "About", JOptionPane.INFORMATION_MESSAGE);
+			}
+		});
 	}
 
 }
