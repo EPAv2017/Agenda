@@ -27,6 +27,8 @@ import javax.swing.SwingConstants;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableCursor;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
@@ -364,6 +366,21 @@ public class Agenda {
 				}
 			}
 		});
+		
+		//reset filters
+		btnStergereFiltre.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				table.removeAll();
+				List<Abonat> lista = carteDeTelefon.getListaAbonati();
+				for(int i = 0 ; i < lista.size(); i++ ) {
+					TableItem linie = new TableItem(table, SWT.NONE);
+					linie.setText(new String [] {lista.get(i).getNume(), lista.get(i).getPrenume(), lista.get(i).getCNP(), lista.get(i).getNrTelefon().getNumar() });
+				}
+				lblCautare.setVisible(false);
+				btnStergereFiltre.setVisible(false);
+			}
+		});
 
 		//on STERGE
 		mntmSterge.addSelectionListener(new SelectionAdapter() {
@@ -468,7 +485,6 @@ public class Agenda {
 			}
 		});
 
-
 		//on ADAUGA
 		mntmAdauga.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -535,7 +551,7 @@ public class Agenda {
 				}
 			}
 		});
-		
+
 		//sorting by FIRSTNAME
 		tblclmnNume.addSelectionListener(new SelectionAdapter() {
 			boolean firstClick = true;
