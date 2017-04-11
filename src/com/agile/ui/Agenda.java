@@ -198,7 +198,49 @@ public class Agenda {
 		formToolkit.adapt(btnStergereFiltre, true, true);
 		btnStergereFiltre.setText("Stergere filtre");
 		btnStergereFiltre.setVisible(false);
-
+		
+		//on OPEN
+		mntmOpen.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				JFileChooser fisier = new JFileChooser();
+				int returnVal = fisier.showOpenDialog(fisier);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					File file = fisier.getSelectedFile();
+					FileInputStream fis = null;
+					ObjectInputStream ois = null;
+					if(file.getName().endsWith(".ser")) {
+						try {
+							fis = new FileInputStream(file.getAbsoluteFile());
+							ois = new ObjectInputStream(fis);
+							carteDeTelefon = (CarteDeTelefon) ois.readObject();
+							List<Abonat> lista = carteDeTelefon.getListaAbonati();
+							table.removeAll();
+							for(int i = 0 ; i < lista.size(); i++ ) {
+								TableItem linie = new TableItem(table, SWT.NONE);
+								linie.setText(new String [] {lista.get(i).getNume(), lista.get(i).getPrenume(), lista.get(i).getCNP(), lista.get(i).getNrTelefon().getNumar() });
+							}
+						} catch (IOException | ClassNotFoundException e1) {
+							e1.printStackTrace();
+						} finally {
+							try {
+								if(fis != null) {
+									fis.close();
+								}
+								if(ois != null) {
+									ois.close();
+								}
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						}
+					} else {
+						JOptionPane.showMessageDialog(fisier, "Fisierul introdus nu poate fi deschis!", "Error", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+			}
+		});
+		
 		//on SAVE
 		mntmSave.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -500,7 +542,7 @@ public class Agenda {
 				}
 			}
 		});
-
+		
 	}
 
 }
