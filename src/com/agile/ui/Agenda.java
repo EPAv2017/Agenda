@@ -319,6 +319,28 @@ public class Agenda {
 			}
 		});
 
+		//on STERGE
+		mntmSterge.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				//if no line is selected
+				if(table.getSelectionCount() < 1) {
+					int confirmed = JOptionPane.showConfirmDialog(null, "Doriti stergerea totala a listei?", "Stergere", JOptionPane.YES_NO_OPTION);
+					if (confirmed == JOptionPane.OK_OPTION) {
+						carteDeTelefon.getListaAbonati().clear();
+						table.removeAll();
+					}
+				} else {
+					int index = table.getSelectionIndex();
+					int confirmed = JOptionPane.showConfirmDialog(null, "Doriti sa stergeti abonatul " + carteDeTelefon.getListaAbonati().get(index).getNume() + "?", "Stergere", JOptionPane.YES_NO_OPTION);
+					if (confirmed == JOptionPane.YES_OPTION) {
+						carteDeTelefon.stergeAbonat(index);
+						table.remove(index);
+					}
+				}
+			}
+		});
+
 		//on ADAUGA
 		mntmAdauga.addSelectionListener(new SelectionAdapter() {
 			@Override
