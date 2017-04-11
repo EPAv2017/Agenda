@@ -3,8 +3,11 @@ package com.agile.ui;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridLayout;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -43,6 +46,7 @@ import com.agile.model.CarteDeTelefon;
 import com.agile.model.Cautare;
 import com.agile.model.NrFix;
 import com.agile.model.NrMobil;
+import com.agile.model.Sortare;
 import com.agile.model.Verificare;
 
 public class Agenda {
@@ -240,7 +244,7 @@ public class Agenda {
 				}
 			}
 		});
-		
+
 		//on SAVE
 		mntmSave.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -531,6 +535,67 @@ public class Agenda {
 				}
 			}
 		});
+		
+		//sorting by FIRSTNAME
+		tblclmnNume.addSelectionListener(new SelectionAdapter() {
+			boolean firstClick = true;
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				List<Abonat> lista = Sortare.SortareDupaNume(carteDeTelefon.getListaAbonati(), firstClick);
+				firstClick = !firstClick;
+				table.removeAll();
+				for(int i = 0 ; i < lista.size(); i++ ) {
+					TableItem linie = new TableItem(table, SWT.NONE);
+					linie.setText(new String [] {lista.get(i).getNume(), lista.get(i).getPrenume(), lista.get(i).getCNP(), lista.get(i).getNrTelefon().getNumar() });
+				}
+			}
+		});
+
+		//sorting by LASTNAME
+		tblclmnPrenume.addSelectionListener(new SelectionAdapter() {
+			boolean firstClick = true;
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				List<Abonat> lista = Sortare.SortareDupaPrenume(carteDeTelefon.getListaAbonati(), firstClick);
+				firstClick = !firstClick;
+				table.removeAll();
+				for(int i = 0 ; i < lista.size(); i++ ) {
+					TableItem linie = new TableItem(table, SWT.NONE);
+					linie.setText(new String [] {lista.get(i).getNume(), lista.get(i).getPrenume(), lista.get(i).getCNP(), lista.get(i).getNrTelefon().getNumar() });
+				}
+			}
+		});
+
+		//sorting by CNP
+		tblclmnCnp.addSelectionListener(new SelectionAdapter() {
+			boolean firstClick = true;
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				List<Abonat> lista = Sortare.SortareDupaCNP(carteDeTelefon.getListaAbonati(), firstClick);
+				firstClick = !firstClick;
+				table.removeAll();
+				for(int i = 0 ; i < lista.size(); i++ ) {
+					TableItem linie = new TableItem(table, SWT.NONE);
+					linie.setText(new String [] {lista.get(i).getNume(), lista.get(i).getPrenume(), lista.get(i).getCNP(), lista.get(i).getNrTelefon().getNumar() });
+				}
+			}
+		});
+
+		//sorting by PHONE
+		tblclmnNrtelefon.addSelectionListener(new SelectionAdapter() {
+			boolean firstClick = true;
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				List<Abonat> lista = Sortare.SortareDupaNrTelefon(carteDeTelefon.getListaAbonati(), firstClick);
+				firstClick = !firstClick;
+				table.removeAll();
+				for(int i = 0 ; i < lista.size(); i++ ) {
+					TableItem linie = new TableItem(table, SWT.NONE);
+					linie.setText(new String [] {lista.get(i).getNume(), lista.get(i).getPrenume(), lista.get(i).getCNP(), lista.get(i).getNrTelefon().getNumar() });
+				}
+			}
+		});
+
 
 		//on EXIT
 		mntmExit.addSelectionListener(new SelectionAdapter() {
